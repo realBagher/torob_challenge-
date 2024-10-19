@@ -15,6 +15,21 @@ class Customer(AbstractUser):
     is_verified = models.BooleanField(default=False)
 
     objects = CustomerManager()
+    
+    groups = models.ManyToManyField(
+        'auth.Group',
+        related_name='customer_set',  # Custom related name for Customer model
+        blank=True,
+        help_text='The groups this user belongs to.',
+        verbose_name='groups'
+    )
+    user_permissions = models.ManyToManyField(
+        'auth.Permission',
+        related_name='customer_permission_set',  # Custom related name for Customer model
+        blank=True,
+        help_text='Specific permissions for this user.',
+        verbose_name='user permissions'
+    )
 
     def __str__(self):
         return self.username
