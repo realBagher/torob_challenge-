@@ -1,0 +1,193 @@
+{% extends "partials/base.html" %}
+{% load static %}
+{% block content %}
+
+
+        <main class="main">
+            <div class="page-header breadcrumb-wrap">
+                <div class="container">
+                    <div class="breadcrumb">
+                        <a href="index.html" rel="nofollow">صفحه اصلی<i class="fi-rs-home mr-5"></i></a>
+                        <span></span> فروشگاه <span></span> فیلتر
+                    </div>
+                </div>
+            </div>
+            <div class="container mb-30 mt-30">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <a class="shop-filter-toogle" href="#">
+                            <span class="fi-rs-filter mr-5"></span>
+                            فروشگاه - فیلتر
+                            <i class="fi-rs-angle-small-down angle-down"></i>
+                            <i class="fi-rs-angle-small-up angle-up"></i>
+                        </a>
+                        <div class="shop-product-fillter-header">
+                            <div class="row">
+                                <div class="col-xl-3 col-lg-6 col-md-6 mb-lg-0 mb-md-2 mb-sm-2">
+                                    <div class="card">
+                                        <h5 class="mb-30">دسته بندی</h5>
+                                        <div class="categories-dropdown-wrap font-heading">
+                                            <ul>
+                                                {% for category in categories %}
+                                                <li>
+                                                    <input data-filter="category" class="form-check-input filter-checkbox" type="checkbox" name="checkbox" id="exampleCheckbox2" value="{{category.id}}" />
+                                                    <a href="{% url 'core:category_product_list' category.cid %}"> <img src={{category.image.url}} alt=""> {{category.title}} </a>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-6 col-md-6 mb-lg-0 mb-md-2 mb-sm-2">
+                                    <div class="card">
+                                        <h5 class="mb-30">فروشنده</h5>
+                                        <div class="d-flex">
+                                            <div class="customeee-checkbox mr-80">
+
+                                                {% for vendor in vendors %}
+
+                                                <input class="form-check-input filter-checkbox" data-filter="vendor" type="checkbox" name="checkbox" id="exampleCheckbox1" value="{{vendor.id}}">
+                                                <label class="form-check-label" for="exampleCheckbox1"><span> {{vendor.title}}</span></label>
+                                                <br><br>
+                                                
+                                                {% endfor %}
+
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                              
+                                <div class="col-xl-3 col-lg-6 col-md-6 mb-lg-0 mb-md-5 mb-sm-5">
+                                    <div class="card">
+                                        <h5 class="mb-10">خرید</h5>
+                                        <div class="sidebar-widget price_range range">
+                                            <div class="price-filter mb-20">
+                                                <div class="price-filter-inner">
+                                                    {% comment %} <div id="slider-range" class="mb-20"></div> {% endcomment %}
+                                                    <input type="range" name="range" value="{{ min_max_price.price__min|floatformat:2 }}" class="slider-range" id="range" min="{{min_max_price.price__min}}" max="{{min_max_price.price__max}}" oninput="max_price.value=this.value">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div class="caption">از: <strong id="slider-range-value1" class="text-brand">{{min_max_price.price__min|floatformat:2}}</strong></div>
+                                                        <div class="caption">تا: <strong id="slider-range-value2" class="text-brand">{{min_max_price.price__max|floatformat:2}}</strong></div>
+                                                    </div>
+                                                    <input type="number" name="" value="{{ min_max_price.price__min|floatformat:2 }}" id="max_price" min="{{min_max_price.price__min}}" max="{{min_max_price.price__max}}" placeholder="قیمت فعلی" onkeyup="range.value=this.value">
+                                                </div>
+                                            </div>
+                                            <div class="custome-checkbox">
+                                               <botton class="btn mt-20 w-100" id="price-filter-btn">فیلتر</botton>
+                                               {% comment %} <h3>{{min_max_price}}</h3> {% endcomment %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="shop-product-fillter">
+                            <div class="totall-product">
+                                <p>در سبدخرید شما <strong class="text-brand">{{products.count}}</strong> محصول یافت شد</p>
+                            </div>
+                            <div class="sort-by-product-area">
+
+                                <div class="sort-by-cover">
+                                   
+                                    <div class="sort-by-dropdown">
+                                        <ul>
+                                            <li><a class="active" href="#">ویژه ها</a></li>
+                                            <li><a href="#">قیمت: کم به زیاد</a></li>
+                                            <li><a href="#">قیمت: زیاد به کم</a></li>
+                                            <li><a href="#">تاریخ به روزرسانی</a></li>
+                                            <li><a href="#">رتبه بندی</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row product-grid" id="filtered-product">
+
+
+                        {% for product in products %}
+                        <div class="col-lg-1-5 col-md-4 col-12 col-sm-6">
+                            <div class="product-cart-wrap mb-30">
+                                <div class="product-img-action-wrap">
+                                    <div class="product-img product-img-zoom">
+                                        <a href="{% url 'core:product_detail' product.pid %}">
+                                            <img class="default-img" src="{{ product.image.url }}" alt="">
+                                            <img class="hover-img" src="{{ product.image.url }}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="product-action-1">
+                                        <a aria-label="علاقه مندی" class="action-btn" href="shop-wishlist.html"><i class="fi-rs-heart"></i></a>
+                                        <a aria-label="مقایسه" class="action-btn" href="shop-compare.html"><i class="fi-rs-shuffle"></i></a>
+                                        <a aria-label="مشاهده سریع" class="action-btn" data-bs-toggle="modal" data-bs-target="#quickViewModal"><i class="fi-rs-eye"></i></a>
+                                    </div>
+                                    <div class="product-badges product-badges-position product-badges-mrg">
+                                        <span class="hot">-{{ product.get_percentage|floatformat:0 }}%</span>
+                                    </div>
+                                </div>
+                                <div class="product-content-wrap">
+                                    <div class="product-category">
+                                        <a hre{% url 'core:product_detail' product.pid %}">{{ p.category.title }}</a>
+                                    </div>
+                                    <h2><a href="shop-product-right.html">{{ product.title }}</a></h2>
+                                    <div class="product-rate-cover">
+                                        <div class="product-rate d-inline-block">
+                                            <div class="product-rating" style="width: 90%"></div>
+                                        </div>
+                                        <span class="font-small ml-5 text-muted"> (4.0)</span>
+                                    </div>
+                                    <div>
+                                        <span class="font-small text-muted">توسط: <a href="vendor-details-1.html">{{ product.vendor.title }}</a></span>
+                                    </div>
+                                    <div class="product-card-bottom">
+                                        {% comment %} <div class="product-price">
+                                            <span>{{ product.price }}</span>
+                                            <span class="old-price">{{ product.old_price }}</span>
+                                        </div> {% endcomment %}
+                                        <div class="product-card-bottom">
+                                            <div class="product-price">
+                                                <span class="current-product-price-{{product.id}}">{{ product.price }}</span>
+                                                <span class="old-price">{{ product.old_price }}</span>
+                                            </div>
+                                            <div class="add-cart">
+                                                <input type="hidden" value="1" id="product-quantity" class="product-quantity-{{product.id}}">
+                                                <input type="hidden" value="{{product.pid}}" class="product-pid-{{product.id}}">
+                                                <input type="hidden" value="{{product.image.url}}" class="product-image-{{product.id}}">
+                                                <input type="hidden" value="{{product.id}}" class="product-id-{{product.id}}">
+                                                <input type="hidden" value="{{product.title}}" class="product-title-{{product.id}}">
+                                                <button type="submit" class="button button-add-to-cart add-to-cart-btn" data-index="{{product.id}}" id="add-to-cart-btn"><i class="fi-rs-shopping-cart"></i>  خرید</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                            
+                        {% endfor %}
+                        </div>
+                        {% comment %} <!--product grid-->
+                        <div class="pagination-area mt-20 mb-20">
+                            <nav aria-label="Page navigation example">
+                                <ul class="pagination justify-content-start">
+                                    <li class="page-item">
+                                        <a class="page-link" href="#"><i class="fi-rs-arrow-small-right"></i></a>
+                                    </li>
+                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item active"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item"><a class="page-link dot" href="#">...</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">6</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#"><i class="fi-rs-arrow-small-left"></i></a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div> {% endcomment %}
+                        
+            <!--End Deals-->
+                    </div>
+                </div>
+            </div>
+        </main>
+{% endblock content %}
