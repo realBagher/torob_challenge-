@@ -7,7 +7,7 @@ from Core.emails_utils import send_otp_email  # Import email utils from Core
 from .forms import LoginForm
 from .models import Customer
 from django.shortcuts import render
-from 
+
 
 class RequestOTPView(FormView):
     template_name = "customers/request_otp.html"
@@ -18,10 +18,8 @@ class RequestOTPView(FormView):
         try:
             user = Customer.objects.get(email=email)
 
-           
             otp_code = generate_otp(user)
 
-           
             send_otp_email(user, otp_code)
 
             return redirect(self.success_url)
