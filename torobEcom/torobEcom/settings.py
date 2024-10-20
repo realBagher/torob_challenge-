@@ -49,9 +49,9 @@ STATICFILES_DIRS = [
 
 INSTALLED_APPS = [
     "rest_framework",  # rest framework added!
-    "Customers",
-    "Orders",
-    "Core",
+    "Customers",  # customer app
+    "Orders",  # Orders app
+    "Core",  # Core app
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
