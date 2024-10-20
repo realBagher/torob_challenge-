@@ -40,6 +40,13 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+STATIC_URL = "/static/"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Location of static files like CSS, JS
+]
+
+
 INSTALLED_APPS = [
     "rest_framework",  # rest framework added!
     "Customers",
