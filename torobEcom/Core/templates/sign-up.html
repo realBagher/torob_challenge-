@@ -1,0 +1,237 @@
+{% extends "partials/base.html" %} {% load static %}
+
+<!DOCTYPE html>
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nest - قالب چندمنظوره فروشگاهی نست</title>
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="" />
+    <meta property="og:type" content="" />
+    <meta property="og:url" content="" />
+    <meta property="og:image" content="" />
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="assets/imgs/theme/favicon.svg"
+    />
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="assets/css/main.css?v=4.0" />
+  </head>
+
+  <body>
+    <!--End header-->
+    <main class="main pages">
+      <div class="page-header breadcrumb-wrap">
+        <div class="container">
+          <div class="breadcrumb">
+            <a href="index.html" rel="nofollow"
+              >صفحه اصلی<i class="fi-rs-home mr-5"></i
+            ></a>
+            <span></span> صفحات <span></span> ثبت نام
+          </div>
+        </div>
+      </div>
+      <div class="page-content pt-150 pb-150">
+        <div class="container">
+          <div class="row">
+            <div class="col-xl-8 col-lg-10 col-md-12 m-auto">
+              <div class="row">
+                <div class="col-lg-6 col-md-8">
+                  <div class="login_wrap widget-taber-content background-white">
+                    <div class="padding_eight_all bg-white">
+                      {% if form.errors %}
+                      <div class="alert alert-danger">
+                        <strong>Error: {{form.errors}}</strong>
+                      </div>
+                      {% endif %}
+                      <div class="heading_s1">
+                        <h1 class="mb-5">ساخت اکانت</h1>
+                        <p class="mb-30">
+                          اکانت دارید ؟ <a href="{% url "userauths:sign-in" %}">وارد شوید</a>
+                        </p>
+                      </div>
+                      <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">{{form.username}}</div>
+                        <div class="form-group">{{form.email}}</div>
+                        <div class="form-group">{{form.password1}}</div>
+                        <div class="form-group">{{form.password2}}</div>
+                        <div class="login_footer form-group">
+                          <div class="chek-form">
+                            <input
+                              type="text"
+                              required=""
+                              name="email"
+                              placeholder="کد امنیتی *"
+                            />
+                          </div>
+                          <span class="security-code">
+                            <b class="text-new">8</b>
+                            <b class="text-hot">6</b>
+                            <b class="text-sale">7</b>
+                            <b class="text-best">5</b>
+                          </span>
+                        </div>
+
+                        <div class="payment_option mb-50">
+                          <div class="custome-radio">
+                            <input
+                              class="form-check-input"
+                              required=""
+                              type="radio"
+                              name="payment_option"
+                              id="exampleRadios3"
+                              checked=""
+                            />
+
+                            <label
+                              class="form-check-label"
+                              for="exampleRadios3"
+                              data-bs-toggle="collapse"
+                              data-target="#bankTranfer"
+                              aria-controls="bankTranfer"
+                              >خریدار هستم</label
+                            >
+                          </div>
+                          <div class="custome-radio">
+                            <input
+                              class="form-check-input"
+                              required=""
+                              type="radio"
+                              name="payment_option"
+                              id="exampleRadios4"
+                              checked=""
+                            />
+                            <label
+                              class="form-check-label"
+                              for="exampleRadios4"
+                              data-bs-toggle="collapse"
+                              data-target="#checkPayment"
+                              aria-controls="checkPayment"
+                              >فروشنده هستم</label
+                            >
+                          </div>
+                        </div>
+                        <div class="login_footer form-group mb-50">
+                          <div class="chek-form">
+                            <div class="custome-checkbox">
+                              <input
+                                class="form-check-input"
+                                type="checkbox"
+                                name="checkbox"
+                                id="exampleCheckbox12"
+                                value=""
+                              />
+                              <label
+                                class="form-check-label"
+                                for="exampleCheckbox12"
+                                ><span
+                                  >شرایط و ضوابط سایت را تایید میکنم</span
+                                ></label
+                              >
+                            </div>
+                          </div>
+                          <a href="page-privacy-policy.html"
+                            ><i class="fi-rs-book-alt mr-5 text-muted"></i
+                            >اطلاعات بیشتر</a
+                          >
+                        </div>
+
+                        <div class="form-group mb-30">
+                          <button
+                            type="submit"
+                            class="btn btn-fill-out btn-block hover-up font-weight-bold"
+                            name="login"
+                          >
+                            ثبت نام
+                          </button>
+                        </div>
+                        <p class="font-xs text-muted">
+                          <strong>نکته:</strong>از داده های شخصی شما برای
+                          پشتیبانی از تجربه شما در سراسر این وب سایت، مدیریت
+                          دسترسی به حساب شما و سایر اهدافی که در خط مشی رازداری
+                          ما توضیح داده شده است استفاده می شود.
+                        </p>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-6 pr-30 d-none d-lg-block">
+                  <div class="card-login mt-115">
+                    <a href="#" class="social-login facebook-login">
+                      <img
+                        src="{% static 'assets/imgs/theme/icons/logo-facebook.svg' %}"
+                        alt=""
+                      />
+                      <span>ادامه با فیسبوک</span>
+                    </a>
+                    <a href="#" class="social-login google-login">
+                      <img
+                        src="{% static 'assets/imgs/theme/icons/logo-google.svg' %}"
+                        alt=""
+                      />
+                      <span>ادامه با گوگل</span>
+                    </a>
+                    <a href="#" class="social-login apple-login">
+                      <img
+                        src="{% static 'assets/imgs/theme/icons/logo-apple.svg' %}"
+                        alt=""
+                      />
+                      <span>ادامه با اپل</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {% endblock content %}
+    <!-- Preloader Start -->
+    <div id="preloader-active">
+      <div class="preloader d-flex align-items-center justify-content-center">
+        <div class="preloader-inner position-relative">
+          <div class="text-center">
+            <img src="{% static 'assets/imgs/theme/loading.gif' %}" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Vendor JS-->
+    <script
+      data-cfasync="false"
+      src="{% static '../../../cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js' %}"
+    ></script>
+    <script src="{% static 'assets/js/vendor/modernizr-3.6.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/jquery-migrate-3.3.0.min.js' %}"></script>
+    <script src="{% static 'assets/js/vendor/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/slick.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery.syotimer.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/wow.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/perfect-scrollbar.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/magnific-popup.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/select2.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/waypoints.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/counterup.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery.countdown.min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/images-loaded.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/isotope.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/scrollup.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery.vticker-min.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery.theia.sticky.js' %}"></script>
+    <script src="{% static 'assets/js/plugins/jquery.elevatezoom.js' %}"></script>
+    <!-- Template  JS -->
+    <script src="{% static 'assets/js/main.js?v=4.0' %}"></script>
+    <script src="{% static 'assets/js/shop.js?v=4.0' %}"></script>
+  </body>
+</html>
