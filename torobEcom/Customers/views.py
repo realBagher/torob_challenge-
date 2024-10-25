@@ -10,6 +10,7 @@ from django.shortcuts import render
 from .forms import CustomerRegistrationForm, AddressFormSet
 from django.views.generic import CreateView
 from Core.forms import OTPVerificationForm
+from django.contrib import messages
 
 
 class RequestOTPView(FormView):
@@ -94,9 +95,10 @@ class CustomerRegistrationView(CreateView):
             # Link addresses to customer
             address_formset.instance = customer
             address_formset.save()
-
+            messages.success(request, "ثبت‌نام با موفقیت انجام شد.")
             return redirect(self.success_url)
         else:
+            messages.error(request, "خطایی در اطلاعات وارد شده وجود دارد.")
             return render(
                 request,
                 self.template_name,
