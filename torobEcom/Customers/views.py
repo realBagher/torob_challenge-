@@ -11,6 +11,7 @@ from .forms import CustomerRegistrationForm, AddressFormSet
 from django.views.generic import CreateView
 from Core.forms import OTPVerificationForm
 from django.contrib import messages
+from django.core.mail import send_mail
 
 
 class RequestOTPView(FormView):
@@ -139,3 +140,27 @@ class VerifyOTPAndLoginView(FormView):
         else:
             # Add error to form if OTP is invalid
             form.add_error("otp", "Invalid OTP")
+
+
+def send_otp_view(request):
+    if request.method == "POST":
+        email = request.POST.get("email")
+        try:
+            user = Customer.objects.get(email=email)
+            otp = generate_otp(user.id)  # Generate and store OTP in Redis
+            send_mail(
+                "Your OTP Code",
+                f"Your OTP code is {otp}. It is valid for 5 minutes.",
+                "your_email@example.com",  # Replace with your email
+                [user.email],
+                fail_silently=False,
+            )
+            request.session["email"] = (
+                email  # Store email in session for OTP verification
+            )
+            messages.success(request, "OTP has been sent to your email.")
+            return redirect("verify_otp")  # Redirect to the OTP verification page
+        except Customer.DoesNotExist:
+            messages.error(request, "Email not found.")
+            return redirect("send_otp")
+    return render(request, "customers/send_otp.html")
