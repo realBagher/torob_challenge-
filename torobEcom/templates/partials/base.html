@@ -349,7 +349,7 @@
                                                 {% if request.user.is_authenticated %}
 												<li><a href="{% url "Core:logout" %}"><i class="fi fi-rs-sign-out mr-10"></i>خروج</a></li>
                                                 {% else %}
-												<li><a href="{% url "Core:sign-in" %}"><i class="fi fi-rs-sign-in mr-10"></i>ورود</a></li>
+												<li><a href="{% url "Core:login" %}"><i class="fi fi-rs-sign-in mr-10"></i>ورود</a></li>
                                                 {% endif %}
                                                 </li>
                                             </ul>
