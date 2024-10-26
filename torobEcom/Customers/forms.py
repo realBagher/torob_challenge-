@@ -50,6 +50,7 @@ AddressFormSet = inlineformset_factory(
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField()
-    password = forms.CharField(widget=forms.PasswordInput, required=False)
-    otp = forms.CharField(max_length=6, required=False)
+    username = forms.CharField(label="نام کاربری")
+    password = forms.CharField(
+        widget=forms.PasswordInput, required=False, label="رمز عبور"
+    )
