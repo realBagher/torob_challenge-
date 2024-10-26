@@ -21,6 +21,9 @@ from .forms import LoginForm
 from Core.forms import OTPEmailForm
 from django_redis import get_redis_connection
 
+from django.contrib.auth import logout
+
+
 import os
 
 
@@ -195,18 +198,24 @@ def verify_otp_view(request):
 
                 if stored_otp and int(stored_otp) == int(otp_code):
                     # OTP is correct for this specific user, proceed with login or further actions
-                    messages.success(request, "OTP verified successfully.")
+                    messages.success(request, "با کد موقت با موافقیت لاگین کردید")
                     return redirect(
                         "Core:index"
                     )  # Redirect to the dashboard or home page
                 else:
                     # OTP is incorrect or has expired
-                    messages.error(request, "Invalid OTP. Please try again.")
+                    messages.error(request, "کد موقت اشتباه است دوباره سعی کنید ")
                     return redirect("Core:login")
             except Customer.DoesNotExist:
-                messages.error(request, "An error occurred. Please try again.")
+                messages.error(request, "مشکلی رخ داده است دوباره سعی کنید.")
                 return redirect("Core:otp_login")
     else:
         form = OTPVerificationForm()
 
     return render(request, "Core/verify_otp.html", {"form": form})
+
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, "با موفقیت خارج شدید")
+    return redirect("Core:index")
