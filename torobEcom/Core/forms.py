@@ -1,12 +1,21 @@
 from django import forms
 
 
+class OTPEmailForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={"placeholder": " لطفا ایمیل  خود را جهت ارسال کد وارد نمایید  "}
+        ),
+        label="ایمیل",
+    )
+
+
 class OTPVerificationForm(forms.Form):
     otp = forms.CharField(
         max_length=6,
-        label="Enter OTP",
+        label="کد  OTP",
         widget=forms.TextInput(
-            attrs={"placeholder": "Enter the OTP you received", "class": "form-control"}
+            attrs={"placeholder": "لطفا کد OTP را وارد کنید ", "class": "form-control"}
         ),
     )
 
