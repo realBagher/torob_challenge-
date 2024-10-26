@@ -12,6 +12,16 @@ from django.views.generic import CreateView
 from Core.forms import OTPVerificationForm
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
+
+from django.views.generic import FormView
+from .forms import LoginForm
+from Core.forms import OTPEmailForm
+from django_redis import get_redis_connection
+
+import os
 
 
 class RequestOTPView(FormView):
@@ -35,35 +45,25 @@ class RequestOTPView(FormView):
 
 
 class LoginView(FormView):
+    template_name = "Core/sign-in.html"
     form_class = LoginForm
-    template_name = "customers/login.html"
-    success_url = reverse_lazy("home")
+    success_url = reverse_lazy("Core:index")
 
     def form_valid(self, form):
-        username = form.cleaned_data.get("username")
-        password = form.cleaned_data.get("password")
-        otp = form.cleaned_data.get("otp")
-
-        # First, try to authenticate using username and password
+        """
+        This method is called when valid form data has been posted.
+        It handles user authentication.
+        """
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
         user = authenticate(self.request, username=username, password=password)
-
         if user is not None:
             login(self.request, user)
+            messages.success(self.request, "You have successfully logged in.")
             return super().form_valid(form)
-
-        # If password is not provided or authentication fails, try OTP login
-        if otp:
-            try:
-                user = Customer.objects.get(username=username)
-                if verify_otp(user, otp):  # Verify OTP using Core utility
-                    login(self.request, user)
-                    return super().form_valid(form)
-                else:
-                    form.add_error("otp", "Invalid OTP")
-            except Customer.DoesNotExist:
-                form.add_error("username", "User does not exist.")
-
-        return self.form_invalid(form)
+        else:
+            form.add_error(None, "Invalid username or password.")
+            return self.form_invalid(form)
 
 
 class CustomerRegistrationView(CreateView):
@@ -108,9 +108,11 @@ class CustomerRegistrationView(CreateView):
 
 
 class VerifyOTPAndLoginView(FormView):
-    template_name = "customers/verify_otp_login.html"
+    template_name = "Core/otp_login.html"
     form_class = OTPVerificationForm
-    success_url = reverse_lazy("home")  # Redirect to home page after successful login
+    success_url = reverse_lazy(
+        "Core:index"
+    )  # Redirect to home page after successful login
 
     def form_valid(self, form):
         # Retrieve the email from session (set when sending OTP)
@@ -148,10 +150,11 @@ def send_otp_view(request):
         try:
             user = Customer.objects.get(email=email)
             otp = generate_otp(user.id)  # Generate and store OTP in Redis
+            print("\n\n\n\n opt code is:", otp)
             send_mail(
                 "Your OTP Code",
                 f"Your OTP code is {otp}. It is valid for 5 minutes.",
-                "your_email@example.com",  # Replace with your email
+                os.getenv("__EMAIL_HOST_USER__"),  # Replace with your email
                 [user.email],
                 fail_silently=False,
             )
@@ -159,8 +162,51 @@ def send_otp_view(request):
                 email  # Store email in session for OTP verification
             )
             messages.success(request, "OTP has been sent to your email.")
-            return redirect("verify_otp")  # Redirect to the OTP verification page
+            return redirect("Core:verify_otp")  # Redirect to the OTP verification page
         except Customer.DoesNotExist:
             messages.error(request, "Email not found.")
             return redirect("send_otp")
-    return render(request, "customers/send_otp.html")
+    form = OTPEmailForm()
+    return render(
+        request,
+        "Core/otp_login.html",
+        {
+            "form": form,
+        },
+    )
+
+
+def verify_otp_view(request):
+    if request.method == "POST":
+        form = OTPVerificationForm(request.POST)
+        if form.is_valid():
+            otp_code = form.cleaned_data.get("otp")  # The OTP entered by the user
+            email = request.session.get("email")  # The email saved in the session
+
+            try:
+                # Retrieve the user based on the email stored in session
+                user = Customer.objects.get(email=email)
+
+                # Connect to Redis to retrieve the stored OTP for this specific user
+                redis_conn = get_redis_connection("default")
+                stored_otp = redis_conn.get(
+                    f"otp:{user.id}"
+                )  # Retrieve the OTP using the user ID
+
+                if stored_otp and int(stored_otp) == int(otp_code):
+                    # OTP is correct for this specific user, proceed with login or further actions
+                    messages.success(request, "OTP verified successfully.")
+                    return redirect(
+                        "Core:index"
+                    )  # Redirect to the dashboard or home page
+                else:
+                    # OTP is incorrect or has expired
+                    messages.error(request, "Invalid OTP. Please try again.")
+                    return redirect("Core:login")
+            except Customer.DoesNotExist:
+                messages.error(request, "An error occurred. Please try again.")
+                return redirect("Core:otp_login")
+    else:
+        form = OTPVerificationForm()
+
+    return render(request, "Core/verify_otp.html", {"form": form})
