@@ -53,8 +53,13 @@
                 <div class="col-lg-6 col-md-8">
                   <div class="login_wrap widget-taber-content background-white">
                     <div class="padding_eight_all bg-white">
+                      {% if form.errors %}
+                      <div class="alert alert-danger">
+                        <strong>Error: {{form.errors}}</strong>
+                      </div>
+                      {% endif %}
                       <div class="heading_s1">
-                        <h1 class="mb-5">ورود از طریق رمز یک بار مصرف ایمیل </h1>
+                        <h1 class="mb-5">ورود با کد OTP</h1>
                         <p class="mb-30">
                           اکانت ندارید ؟
                           <a href="{% url "Core:sign-up" %}">ثبت نام کنید</a>
@@ -63,7 +68,9 @@
                       <form method="POST">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit">Submit OTP</button>
+                        <button type="submit">ورود</button>
+                        <button class="submit" type="button" onclick="window.location.href='{% url 'Core:login' %}'">ورود با نام کاربری </button>
+
                     </form>
                 
                     {% if messages %}
