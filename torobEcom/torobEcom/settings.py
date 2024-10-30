@@ -49,15 +49,15 @@ STATICFILES_DIRS = [
 
 INSTALLED_APPS = [
     "rest_framework",  # rest framework added!
-    "Customers",  # customer app
-    "Orders",  # Orders app
-    "Core",  # Core app
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "Customers",  # customer app
+    "Orders",  # Orders app
+    "Core",  # Core app
 ]
 
 MIDDLEWARE = [
