@@ -91,12 +91,9 @@ class CustomerRegistrationView(CreateView):
 
         if customer_form.is_valid() and address_formset.is_valid():
             customer = customer_form.save(commit=False)
-            customer.set_password(
-                customer_form.cleaned_data["password1"]
-            )  # Handle password saving
+            customer.set_password(customer_form.cleaned_data["password1"])
             customer.save()
 
-            # Link addresses to customer
             address_formset.instance = customer
             address_formset.save()
             messages.success(request, "ثبت‌نام با موفقیت انجام شد.")
@@ -113,37 +110,32 @@ class CustomerRegistrationView(CreateView):
 class VerifyOTPAndLoginView(FormView):
     template_name = "Core/otp_login.html"
     form_class = OTPVerificationForm
-    success_url = reverse_lazy(
-        "Core:index"
-    )  # Redirect to home page after successful login
+    success_url = reverse_lazy("Core:index")
 
     def form_valid(self, form):
-        # Retrieve the email from session (set when sending OTP)
+
         email = self.request.session.get("email")
 
         if not email:
-            # If no email in session, redirect to login page
+
             return redirect("login")
 
         otp = form.cleaned_data.get("otp")
 
-        # Verify the OTP using the core OTP utility
-        if verify_otp(email, otp):  # If OTP is correct
+        if verify_otp(email, otp):
             try:
-                # Fetch the user using the email
+
                 user = Customer.objects.get(email=email)
 
-                # Log the user in
                 login(self.request, user)
 
-                # Redirect to the success URL (e.g., homepage)
                 return super().form_valid(form)
 
             except Customer.DoesNotExist:
                 form.add_error(None, "User not found")
                 return self.form_invalid(form)
         else:
-            # Add error to form if OTP is invalid
+
             form.add_error("otp", "Invalid OTP")
 
 
@@ -152,20 +144,18 @@ def send_otp_view(request):
         email = request.POST.get("email")
         try:
             user = Customer.objects.get(email=email)
-            otp = generate_otp(user.id)  # Generate and store OTP in Redis
+            otp = generate_otp(user.id)
             print("\n\n\n\n opt code is:", otp)
             send_mail(
                 "Your OTP Code",
                 f"Your OTP code is {otp}. It is valid for 5 minutes.",
-                os.getenv("__EMAIL_HOST_USER__"),  # Replace with your email
+                os.getenv("__EMAIL_HOST_USER__"),
                 [user.email],
                 fail_silently=False,
             )
-            request.session["email"] = (
-                email  # Store email in session for OTP verification
-            )
+            request.session["email"] = email
             messages.success(request, "OTP has been sent to your email.")
-            return redirect("Core:verify_otp")  # Redirect to the OTP verification page
+            return redirect("Core:verify_otp")
         except Customer.DoesNotExist:
             messages.error(request, "Email not found.")
             return redirect("send_otp")
@@ -183,27 +173,22 @@ def verify_otp_view(request):
     if request.method == "POST":
         form = OTPVerificationForm(request.POST)
         if form.is_valid():
-            otp_code = form.cleaned_data.get("otp")  # The OTP entered by the user
-            email = request.session.get("email")  # The email saved in the session
+            otp_code = form.cleaned_data.get("otp")
+            email = request.session.get("email")
 
             try:
-                # Retrieve the user based on the email stored in session
+
                 user = Customer.objects.get(email=email)
 
-                # Connect to Redis to retrieve the stored OTP for this specific user
                 redis_conn = get_redis_connection("default")
-                stored_otp = redis_conn.get(
-                    f"otp:{user.id}"
-                )  # Retrieve the OTP using the user ID
+                stored_otp = redis_conn.get(f"otp:{user.id}")
 
                 if stored_otp and int(stored_otp) == int(otp_code):
-                    # OTP is correct for this specific user, proceed with login or further actions
+
                     messages.success(request, "با کد موقت با موافقیت لاگین کردید")
-                    return redirect(
-                        "Core:index"
-                    )  # Redirect to the dashboard or home page
+                    return redirect("Core:index")
                 else:
-                    # OTP is incorrect or has expired
+
                     messages.error(request, "کد موقت اشتباه است دوباره سعی کنید ")
                     return redirect("Core:login")
             except Customer.DoesNotExist:
