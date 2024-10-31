@@ -53,7 +53,7 @@ def index_view(request):
                 }
             )
 
-    # Convert total_amount to integer before passing to the template
+    
     total_amount = int(total_amount)
 
     return render(

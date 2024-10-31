@@ -301,7 +301,7 @@
                                             {% for item in cart_items %}
                                                 <li>
                                                     <div class="shopping-cart-img">
-                                                        <a href="shop-product-right.html"><img alt="Nest" src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}"></a>
+                                                        <a href="shop-product-right.html"><img alt="Nest" src="{{item.image_url}}"></a>
                                                     </div>
                                                     <div class="shopping-cart-title">
                                                         <h4><a href="shop-product-right.html">{{item.name}}</a></h4>
