@@ -33,7 +33,7 @@ class Category(models.Model):
         null=True,
     )
     image = models.FileField(
-        upload_to="category_images/",
+        upload_to="media/category_images/",
         validators=[ImageOrSVGValidator()],
         blank=True,
         null=True,
@@ -72,7 +72,7 @@ class ProductImage(models.Model):
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name="images"
     )
-    image = models.ImageField(upload_to="product_images/")
+    image = models.ImageField(upload_to="media/product_images/")
 
     def __str__(self):
         return f"Image for {self.product.name}"
