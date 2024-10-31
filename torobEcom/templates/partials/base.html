@@ -374,16 +374,20 @@
                                     <i class="fi-rs-angle-down"></i>
                                 </a>
                                 <div class="categories-dropdown-wrap categories-dropdown-active-large font-heading">
-                                    <div class="d-flex categori-dropdown-inner">
-                                        <ul>
+                                    <div class="d-flex categori-dropdown-inner" >
+                                        <ul >
+                                            
+                                            
                                             {% for c in categories  %}
 
-                                            <li>
-                                                <a href="{% url 'core:category-product-list' c.cid %}"> <img src="{{c.image.url}}" alt=""> {{c.title}} </a>
+                                            <li >
+                                               
+                                                {% comment %} <a href="{% url 'Core:category-product-list' c.cid %}">  {% endcomment %}
+                                                    <img  src="{{c.image.url}}" style="width: 100%; height: 100%;"  alt=""> {{c.name}} </a>
                                             </li>
                                             {% endfor %}
                                         </ul>
-                                        <ul class="end">
+                                        {% comment %} <ul class="end">
                                             <li>
                                                 <a href="shop-grid-right.html"> <img src="{% static 'assets/imgs/theme/icons/category-6.svg' %}" alt=""> نوشیدنی‌ها</a>
                                             </li>
@@ -399,9 +403,9 @@
                                             <li>
                                                 <a href="shop-grid-right.html"> <img src="{% static 'assets/imgs/theme/icons/category-10.svg' %}" alt="">نان و آبمیوه</a> 
                                             </li>
-                                        </ul>
+                                        </ul> {% endcomment %}
                                     </div>
-                                    <div class="more_slide_open" style="display: none">
+                                    {% comment %} <div class="more_slide_open" style="display: none">
                                         <div class="d-flex categori-dropdown-inner">
                                             <ul>
                                                 <li>
@@ -421,7 +425,7 @@
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="more_categories"><span class="icon"></span> <span class="heading-sm-1">مشاهده بیشتر ...</span></div>
+                                    <div class="more_categories"><span class="icon"></span> <span class="heading-sm-1">مشاهده بیشتر ...</span></div> {% endcomment %}
                                 </div>
                             </div>
                             <div class="main-menu main-menu-padding-1 main-menu-lh-2 d-none d-lg-block font-heading">
