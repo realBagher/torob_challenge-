@@ -7,26 +7,43 @@ from .models import Order, OrderItem
 from Products.models import Product
 
 
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import Order, OrderItem, Product
+
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+
+    # Get the quantity from POST data; if it's not there, default to 1
     quantity = int(request.POST.get("quantity", 1))
 
     if request.user.is_authenticated:
         order, created = Order.objects.get_or_create(
             customer=request.user, status="cart"
         )
+        
+        # Get or create the OrderItem with an initial quantity of 1 if newly created
         item, item_created = OrderItem.objects.get_or_create(
-            order=order, product=product
+            order=order,
+            product=product,
+            defaults={'quantity': 1}  # Start with quantity of 1 if item is new
         )
-        item.quantity += quantity
+        
+        # If the item already exists, add 1 to the existing quantity
+        if not item_created:
+            item.quantity += 1  # Increase by 1
         item.save()
     else:
+        # Guest user (session-based cart)
         cart = request.session.get("cart", {})
-        cart[product_id] = cart.get(product_id, 0) + quantity
+        
+        # If the item is already in the cart, add 1 to its quantity; otherwise, set it to 1
+        cart[product_id] = cart.get(product_id, 0) + 1
         request.session["cart"] = cart
 
     messages.success(request, f"{product.name} added to cart.")
-    return redirect("cart_view")
+    return redirect("Core:index")
+
 
 
 def cart_view(request):
