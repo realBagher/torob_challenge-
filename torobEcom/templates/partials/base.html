@@ -293,39 +293,30 @@
                                     <div class="header-action-icon-2">
                                         <a class="mini-cart-icon" href="shop-cart.html">
                                             <img alt="Nest" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
-                                            <span class="pro-count blue">2</span>
+                                            <span class="pro-count blue">{{total_count}}</span>
                                         </a>
                                         <a href="shop-cart.html"><span class="lable">سبدخرید</span></a>
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                             <ul>
+                                            {% for item in cart_items %}
                                                 <li>
                                                     <div class="shopping-cart-img">
                                                         <a href="shop-product-right.html"><img alt="Nest" src="{% static 'assets/imgs/shop/thumbnail-3.jpg' %}"></a>
                                                     </div>
                                                     <div class="shopping-cart-title">
-                                                        <h4><a href="shop-product-right.html">آب پرتقال</a></h4>
-														<h4><span>1 × </span>80.000 تومان</h4>
+                                                        <h4><a href="shop-product-right.html">{{item.name}}</a></h4>
+														<h4><span>{{item.quantity}} × </span>{{item.price}} تومان</h4>
 													</div>
 													<div class="shopping-cart-delete">
 														<a href="#"><i class="fi-rs-cross-small"></i></a>
 													</div>
 												</li>
-												<li>
-													<div class="shopping-cart-img">
-														<a href="shop-product-right.html"><img alt="Nest" src="{% static 'assets/imgs/shop/thumbnail-2.jpg' %}"></a>
-													</div>
-													<div class="shopping-cart-title">
-														<h4><a href="shop-product-right.html">فلفل دلمه ای</a></h4>
-														<h4><span>1 × </span>32.000 تومان</h4>
-													</div>
-													<div class="shopping-cart-delete">
-														<a href="#"><i class="fi-rs-cross-small"></i></a>
-													</div>
-												</li>
+											{% endfor %}
 											</ul>
 											<div class="shopping-cart-footer">
 												<div class="shopping-cart-total">
-													<h4>جمع کل: <span>112.000 تومان</span></h4>
+                                                    <h1>{{total_amount}},{{total_count}}</h1>
+													<h4>جمع کل: <span>{{total_amount}} تومان</span></h4>
 												</div>
 												<div class="shopping-cart-button">
 													<a href="shop-cart.html" class="outline">مشاهده سبد خرید</a>
