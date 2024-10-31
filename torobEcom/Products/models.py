@@ -1,4 +1,25 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.deconstruct import deconstructible
+from PIL import Image
+import os
+
+
+class ImageOrSVGValidator:
+    def __call__(self, file):
+        ext = os.path.splitext(file.name)[1].lower()
+        valid_extensions = [".jpg", ".jpeg", ".png", ".gif", ".svg"]
+        if ext not in valid_extensions:
+            raise ValidationError("Unsupported file extension.")
+
+        # Check file type if it's not SVG
+        if ext != ".svg":
+            try:
+                img = Image.open(file)
+                img.verify()  # This will throw an exception if it's not a valid image
+            except (IOError, SyntaxError):
+                raise ValidationError("Unsupported image file or corrupted image.")
 
 
 class Category(models.Model):
@@ -11,7 +32,12 @@ class Category(models.Model):
         blank=True,
         null=True,
     )
-    image = models.ImageField(upload_to="category_images/", blank=True, null=True)
+    image = models.FileField(
+        upload_to="category_images/",
+        validators=[ImageOrSVGValidator()],
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return self.name
