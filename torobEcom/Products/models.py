@@ -1,11 +1,13 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.utils.html import mark_safe
 from django.utils.deconstruct import deconstructible
 from PIL import Image
 import os
 
 
+@deconstructible
 class ImageOrSVGValidator:
     def __call__(self, file):
         ext = os.path.splitext(file.name)[1].lower()
@@ -57,6 +59,7 @@ class Brand(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
+    image = models.ImageField(upload_to="Product")
     price = models.DecimalField(max_digits=10, decimal_places=2)
     brand = models.ForeignKey(Brand, on_delete=models.CASCADE)
     category = models.ForeignKey(
@@ -67,15 +70,20 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name_plural = "Products"
+
+    def product_image(self):
+        return mark_safe('<img src="%s" width="50" height="50"/>' % (self.image.url))
+
 
 class ProductImage(models.Model):
-    product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="images"
-    )
-    image = models.ImageField(upload_to="media/product_images/")
 
-    def __str__(self):
-        return f"Image for {self.product.name}"
+    image = models.ImageField(upload_to="product-images")
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        verbose_name_plural = "Product Images"
 
 
 class Discount(models.Model):
