@@ -232,16 +232,35 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                    {% if user.is_authenticated  %}
+                                        {% if address.exists  %}
+                                            {% for address in addresses %}
+
+
+
+
                                         <td class="cart_total_label">
                                             <h6 class="text-muted">آدرس</h6>
                                         </td>
                                         <td class="cart_total_amount">
-                                            <h5 class="text-heading text-end">استان البرز</h5></td> </tr> <tr>
+                                            <h5 class="text-heading text-end">{{ address.street }}, {{ address.city }}</h5></td> </tr> <tr>
                                         <td class="cart_total_label">
                                             <h6 class="text-muted">ادامه آدرس</h6>
                                         </td>
                                         <td class="cart_total_amount">
-                                            <h5 class="text-heading text-end">کرج ، شاهین ویلا</h5></td> </tr> <tr>
+                                            <h5 class="text-heading text-end">{{ address.country }} ، {{ address.postal_code }}</h5></td> </tr> <tr>
+                                                {% endfor %}
+                                            {% else %}
+                                            <td class="cart_total_amount">
+                                                <h5 class="text-heading text-end">برای ثبت نهایی سفارش لاگین کنید. آدرس موجود نیست</h5></td> </tr> <tr>
+                                            <td class="cart_total_label">
+                                                <h6 class="text-muted">ادامه آدرس</h6>
+                                            </td>
+                                            <td class="cart_total_amount">
+                                                <h5 class="text-heading text-end">برای ثبت نهایی سفارش لاگین کنید. آدرس موجود نیست</h5></td> </tr> <tr>
+                                            {%endif %}
+                                        {% endif  %}
+
                                         <td scope="col" colspan="2">
                                             <div class="divider-2 mt-10 mb-10"></div>
                                         </td>
@@ -257,7 +276,12 @@
                                 </tbody>
                             </table>
                         </div>
+                        {% if user.is_authenticated %}
+
                         <a href="#" class="btn mb-20 w-100">تسویه نهایی<i class="fi-rs-sign-out ml-15"></i></a>
+                        {% else %}
+                        <a href="{% url 'Core:login' %}?next={% url 'view-cart' %}" class="btn mb-20 w-100">تسویه نهایی<i class="fi-rs-sign-out ml-15"></i></a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
