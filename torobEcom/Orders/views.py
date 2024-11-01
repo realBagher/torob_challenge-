@@ -6,7 +6,7 @@ from django.contrib import messages
 from .models import Order, OrderItem
 from Products.models import Product, Discount
 from django.http import JsonResponse
-
+from Customers.models import Address
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
 from .models import Order, OrderItem, Product
@@ -98,32 +98,26 @@ def transfer_session_cart_to_user(request):
 
 def cart_view(request):
     cart_items = []
-    total_amount = 0
+    total_amount = 0  # Initialize total amount
+    addresses = None  # Initialize addresses as None for guests
+
     if request.user.is_authenticated:
+        # Get or create the user's cart order with status "cart"
         order = Order.objects.filter(customer=request.user, status="cart").first()
         if order:
-            for item in order.items.select_related("product").all():
-                product_total = item.product.price * item.quantity
-                total_amount += product_total
-                cart_items.append(
-                    {
-                        "id": item.product.id,
-                        "name": item.product.name,
-                        "price": item.product.price,
-                        "quantity": item.quantity,
-                        "image_url": item.product.image.url,
-                        "total_price": product_total,
-                        "rating": item.product.rating,  # Assuming rating is a field on Product
-                        "rating_percentage": item.product.rating
-                        * 20,  # e.g., for a 5-star system
-                    }
-                )
+            cart_items = order.items.select_related("product").all()
+            total_amount = sum(
+                item.product.price * item.quantity for item in cart_items
+            )
+
+        # Retrieve the addresses for the authenticated customer
+        addresses = Address.objects.filter(customer=request.user)
     else:
+        # For guest users, retrieve cart data from session
         cart = request.session.get("cart", {})
         for product_id, quantity in cart.items():
             product = get_object_or_404(Product, id=product_id)
-            product_total = product.price * quantity
-            total_amount += product_total
+            total_amount += product.price * quantity
             cart_items.append(
                 {
                     "id": product.id,
@@ -131,7 +125,7 @@ def cart_view(request):
                     "price": product.price,
                     "quantity": quantity,
                     "image_url": product.image.url,
-                    "total_price": product_total,
+                    "total_price": product.price * quantity,
                 }
             )
 
@@ -141,6 +135,7 @@ def cart_view(request):
         {
             "cart_items": cart_items,
             "total_amount": total_amount,
+            "addresses": addresses,  # Pass addresses to the template
         },
     )
 
