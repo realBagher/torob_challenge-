@@ -291,11 +291,11 @@
                                         <a href="shop-wishlist.html"><span class="lable">علاقه مندی</span></a>
                                     </div>
                                     <div class="header-action-icon-2">
-                                        <a class="mini-cart-icon" href="shop-cart.html">
+                                        <a class="mini-cart-icon" href="{% url 'view-cart' %}">
                                             <img alt="Nest" src="{% static 'assets/imgs/theme/icons/icon-cart.svg' %}">
                                             <span class="pro-count blue">{{total_count}}</span>
                                         </a>
-                                        <a href="shop-cart.html"><span class="lable">سبدخرید</span></a>
+                                        <a href="{% url 'view-cart' %}"><span class="lable">سبدخرید</span></a>
                                         <div class="cart-dropdown-wrap cart-dropdown-hm2">
                                             <ul>
                                             {% for item in cart_items %}
@@ -308,18 +308,18 @@
 														<h4><span>{{item.quantity}} × </span>{{item.price}} تومان</h4>
 													</div>
 													<div class="shopping-cart-delete">
-														<a href="#"><i class="fi-rs-cross-small"></i></a>
+														<a href="{% url 'remove_from_cart' item.id %}"><i class="fi-rs-cross-small"></i></a>
 													</div>
 												</li>
 											{% endfor %}
 											</ul>
 											<div class="shopping-cart-footer">
 												<div class="shopping-cart-total">
-                                                    <h1>{{total_amount}},{{total_count}}</h1>
-													<h4>جمع کل: <span>{{total_amount}} تومان</span></h4>
+                                                   
+													<h4>جمع کل: <span>{{total_amount}}  تومان</span></h4>
 												</div>
 												<div class="shopping-cart-button">
-													<a href="shop-cart.html" class="outline">مشاهده سبد خرید</a>
+													<a href="{% url 'view-cart' %}" class="outline">مشاهده سبد خرید</a>
 													<a href="shop-checkout.html">بررسی مجدد</a>
 												</div>
 											</div>
@@ -424,14 +424,10 @@
                                     <ul>
                                         <li class="hot-deals"><img src="{% static 'assets/imgs/theme/icons/icon-hot.svg' %}" alt="hot deals"><a href="shop-grid-right.html">تخفیف ها</a></li>
                                         <li>
-                                            <a class="active" href="index.html">صفحه اصلی <i class="fi-rs-angle-down"></i></a>
+                                            <a class="active" href="/">صفحه اصلی <i class="fi-rs-angle-down"></i></a>
                                             <ul class="sub-menu">
-                                                <li><a href="index.html">صفحه اصلی یک</a></li>
-                                                <li><a href="index-2.html">صفحه اصلی دو</a></li>
-                                                <li><a href="index-3.html">صفحه اصلی سه</a></li>
-                                                <li><a href="index-4.html">صفحه اصلی چهار</a></li>
-                                        <li><a href="index-5.html">صفحه اصلی پنج</a></li>
-                                        <li><a href="index-6.html">صفحه اصلی شش</a></li>
+                                                <li><a href="/">صفحه اصلی یک</a></li>
+                                              
                                             </ul>
                                         </li>
                                         <li>
