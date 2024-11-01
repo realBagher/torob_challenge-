@@ -28,6 +28,7 @@ class CustomerRegistrationForm(forms.ModelForm):
 
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("Passwords don't match.")
+        print("\n\n data: ", cleaned_data)
         return cleaned_data
 
 
